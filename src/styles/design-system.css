@@ -26,6 +26,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, textarea:focus-vis
 h1, h2, h3 { letter-spacing: -.025em; }
 header { background: #fff !important; }
 header > div { min-height: 76px; }
+header .brand-logo { display: block; width: 52px; height: 52px; object-fit: contain; }
 header nav button { border-radius: 6px !important; font-size: 13px !important; }
 header nav .nav-active { color: #513b2c; background: #f3eeea; }
 header button > div + div > span:last-child { display: none; }
@@ -107,6 +108,7 @@ footer { background: transparent !important; margin-top: 36px !important; }
   .journey-grid { gap: 28px; }
 }
 @media (max-width: 640px) {
+  header .brand-logo { width: 46px; height: 46px; }
   header > div { padding-top: 16px !important; padding-bottom: 12px !important; }
   header nav { width: 100%; overflow-x: auto; flex-wrap: nowrap !important; gap: 2px !important; }
   header nav button { white-space: nowrap; padding: 8px 9px !important; font-size: 11px !important; }
