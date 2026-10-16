@@ -1394,6 +1394,16 @@
                     </div>
                   </aside>
                 </section>
+                <section className="official-logo-strip" aria-label="Rujukan layanan resmi">
+                  <div className="official-logo-intro"><span>RUJUKAN LAYANAN</span><p>Kenali portal resmi yang mungkin relevan dengan kebutuhan usahamu.</p></div>
+                  <div className="official-logo-list">
+                    {[
+                      ["assets/logo/oss.png", "NIB / OSS"],
+                      ["assets/logo/mui.png", "Sertifikasi Halal"],
+                      ["assets/logo/jakevo.png", "JakEVO"]
+                    ].map(([logo, label]) => <div className="official-logo-item" key={label}><img src={logo} alt={`${label} logo`} /><span>{label}</span></div>)}
+                  </div>
+                </section>
                 <section className="home-benefits" id="cara-kerja" aria-label="Cara kerja dan manfaat RintisUsaha">
                   {[
                     ["01", "Temukan kandidat KBLI yang relevan.", "Ceritakan apa yang kamu jual dan bagaimana usahamu berjalan. Periksa kandidat kode usaha beserta alasan kecocokannya sebelum memilih di OSS."],

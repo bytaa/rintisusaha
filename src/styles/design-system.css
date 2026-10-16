@@ -209,6 +209,15 @@ footer { background: transparent !important; margin-top: 36px !important; }
 .home-editorial .home-examples button { padding: 10px 12px; border: 1px solid #e6e0d8; border-radius: 6px; background: #fff; font-size: 12px; }
 .home-editorial .home-examples button:hover { background: #f3eee7; }
 .home-editorial .home-examples button span { margin-left: 14px; color: #8a694c; }
+.official-logo-strip { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin: 4px 0 12px; padding: 20px 0; border-top: 1px solid #e4d9ce; border-bottom: 1px solid #e4d9ce; }
+.official-logo-intro { min-width: 210px; }
+.official-logo-intro span { color: #8a694c; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
+.official-logo-intro p { max-width: 260px; margin-top: 5px; color: #75665a; font-size: 11px; line-height: 1.55; }
+.official-logo-list { display: flex; align-items: center; justify-content: flex-end; gap: 30px; }
+.official-logo-item { display: flex; align-items: center; gap: 9px; color: #594635; font-size: 11px; font-weight: 600; }
+.official-logo-item img { width: 72px; height: 34px; object-fit: contain; object-position: center; }
+.official-logo-item:nth-child(2) img { width: 34px; }
+.official-logo-item:nth-child(3) img { width: 58px; }
 
 /* Editorial hero treatment: stronger contrast, still within the warm brown palette. */
 .screen-landing .home-intro {
@@ -412,6 +421,9 @@ footer { background: transparent !important; margin-top: 36px !important; }
   .home-editorial .route-paper h2 { font-size: 20px; }
   .home-editorial .route-steps strong { font-size: 12px; }
   .home-editorial .route-steps p, .home-editorial .route-companion { font-size: 11px; }
+  .official-logo-strip { display: block; }
+  .official-logo-list { justify-content: space-between; gap: 8px; margin-top: 17px; }
+  .official-logo-item { flex-direction: column; gap: 4px; text-align: center; }
 }
 
 /* Responsive application shell. */
