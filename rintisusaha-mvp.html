@@ -2253,13 +2253,6 @@
                   </section>
                 ) : !account ? (
                   <section className="account-login-panel">
-                    <div className="account-login-copy">
-                      <span className="account-kicker">AKUN PERSONAL</span>
-                      <h1>Rapi menyimpan langkah usahamu.</h1>
-                      <p>Masuk untuk menyimpan profil usaha, percakapan Riri, checklist, dan progres persiapan di perangkat ini.</p>
-                      <div className="account-login-note"><span>✓</span><span>Profil dan progres tersimpan lokal di browser ini.</span></div>
-                      <div className="account-login-note"><span>↗</span><span>Kamu tetap diarahkan ke portal resmi untuk pengajuan sebenarnya.</span></div>
-                    </div>
                     <form className="account-login-form" onSubmit={handleLogin}>
                       <div className="account-form-heading"><span className="account-avatar">R</span><div><strong>{authMode === "signin" ? "Sign in ke RintisUsaha" : "Sign up di RintisUsaha"}</strong><span>{authMode === "signin" ? "Lanjutkan persiapan usahamu" : "Buat akun personal baru"}</span></div></div>
                       {authMode === "signup" && <><label htmlFor="account-name">Nama lengkap</label><input id="account-name" value={loginName} onChange={(event) => setLoginName(event.target.value)} placeholder="Contoh: Aulia Rahma" autoComplete="name" /></>}

@@ -292,13 +292,8 @@ footer { background: transparent !important; margin-top: 36px !important; }
 .screen-account { background: #f7f2ec !important; }
 .screen-account main { padding-top: 38px; padding-bottom: 76px; }
 .account-page { max-width: 1080px; margin: 0 auto; }
-.account-login-panel { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 70px; align-items: center; min-height: 580px; }
-.account-login-copy { padding: 30px 0; }
+.account-login-panel { display: grid; place-items: center; min-height: 580px; }
 .account-kicker { display: block; color: #8a694c; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
-.account-login-copy h1 { max-width: 520px; margin: 14px 0 18px; color: #3d2b22; font-size: clamp(36px, 5vw, 58px); font-weight: 600; line-height: 1.08; letter-spacing: -.045em; }
-.account-login-copy > p { max-width: 470px; color: #75665a; font-size: 15px; line-height: 1.8; }
-.account-login-note { display: flex; gap: 11px; align-items: center; margin-top: 20px; color: #594635; font-size: 12px; }
-.account-login-note span:first-child { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #e8d8c7; color: #694c37; font-weight: 700; }
 .account-login-form { display: flex; flex-direction: column; gap: 9px; padding: 28px; border: 1px solid #e0d1c1; border-radius: 14px; background: #fffaf4; box-shadow: 0 16px 34px rgb(83 52 34 / .1); }
 .account-form-heading, .account-profile-heading { display: flex; align-items: center; gap: 12px; }
 .account-form-heading { padding-bottom: 17px; margin-bottom: 5px; border-bottom: 1px solid #eadfd3; }
@@ -350,10 +345,7 @@ footer { background: transparent !important; margin-top: 36px !important; }
   .screen-results main > div > section:first-child, .screen-dashboard main > div > section:first-child, .screen-directory main > div > div:first-child { border-radius: 12px; }
   .screen-results main section, .screen-dashboard main section, .screen-directory main > div > div { box-shadow: 0 4px 14px rgb(83 52 34 / 0.04); }
   .screen-account main { padding-top: 22px; padding-bottom: 92px; }
-  .account-login-panel { display: block; min-height: 0; }
-  .account-login-copy { padding: 20px 2px 26px; }
-  .account-login-copy h1 { font-size: 37px; }
-  .account-login-copy > p { font-size: 13px; }
+  .account-login-panel { display: grid; min-height: 0; padding: 24px 0; }
   .account-metrics, .account-service-grid { grid-template-columns: 1fr; }
   .account-welcome-panel { align-items: flex-start; padding: 22px; }
   .account-confirmation-panel { min-height: 0; padding: 48px 12px; }
