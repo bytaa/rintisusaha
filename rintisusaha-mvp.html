@@ -1215,6 +1215,10 @@
             return;
           }
           showToast("Sign up berhasil dan kamu sudah masuk.");
+          setAuthStatus("authenticated");
+          setActiveTab("landing");
+          setLoginPassword("");
+          return;
         } else {
           const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: loginPassword });
           if (error) {
