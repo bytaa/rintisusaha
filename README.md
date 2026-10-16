@@ -29,6 +29,19 @@ Untuk menyimpan data akun secara permanen, jalankan [supabase/schema.sql](supaba
 - `src/ui/`: komponen UI reusable.
 - `server/index.js`: static server dan proxy Gemini `/api/riri`.
 
+## Deploy Vercel
+
+Import repository ini ke Vercel, lalu tambahkan environment variables berikut di Project Settings:
+
+```env
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini-3.5-flash-lite
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+```
+
+Entrypoint root dan serverless functions sudah tersedia melalui `index.html`, `vercel.json`, `api/config.js`, dan `api/riri.js`. Setelah deploy, tambahkan URL production dengan suffix `/?auth=confirmed` ke Supabase Authentication URL Configuration.
+
 ## Pengujian dan tinjauan
 
 Jalankan `npm test`. Lihat `REVIEW-MVP.md` untuk perubahan UX, batas MVP, serta hasil verifikasi.
