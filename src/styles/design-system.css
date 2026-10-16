@@ -255,6 +255,42 @@ footer { background: transparent !important; margin-top: 36px !important; }
   .screen-landing .home-benefits { margin-top: 24px; }
 }
 
+/* Editorial landing composition: layered paper, compact labels, and a warmer type contrast. */
+.screen-landing { background: #f8f4ef !important; }
+.screen-landing main { max-width: 1180px !important; }
+.screen-landing .home-editorial h1, .screen-landing .home-editorial h2 { font-family: Georgia, 'Times New Roman', serif; }
+.screen-landing .home-intro { grid-template-columns: minmax(0, 1.04fr) minmax(300px, .96fr); gap: 64px; padding: 64px 58px 50px; border-radius: 0 0 22px 22px; background: #4b3327; box-shadow: 0 20px 46px rgb(53 42 35 / .16); }
+.screen-landing .home-intro-content { align-self: start; padding-top: 34px; }
+.screen-landing .home-kicker { margin-bottom: 30px; }
+.screen-landing .home-editorial h1 { max-width: 590px; font-size: clamp(40px, 4.8vw, 67px); line-height: .98; letter-spacing: -.05em; }
+.screen-landing .home-lead { max-width: 470px; font-size: 17px; line-height: 1.65; }
+.screen-landing .home-description { max-width: 490px; font-size: 13px; line-height: 1.85; }
+.screen-landing .home-route { position: relative; padding: 34px 22px 36px; }
+.screen-landing .route-shop { opacity: .86; transform: rotate(-2deg); }
+.screen-landing .route-paper { z-index: 2; transform: rotate(2deg); padding: 28px; box-shadow: 11px 13px 0 #36251c, 0 16px 30px rgb(53 42 35 / .16); }
+.screen-landing .route-paper h2 { font-size: 28px; }
+.route-floating { position: absolute; z-index: 3; display: flex; align-items: center; gap: 9px; border: 1px solid #d8c2a9; border-radius: 6px; background: #fffaf4; color: #4b3327; box-shadow: 5px 6px 0 #36251c; }
+.route-floating-top { top: 4px; right: -10px; padding: 10px 13px; transform: rotate(5deg); }
+.route-floating-top span { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: #eadbca; color: #694c37; font-size: 10px; }
+.route-floating-top strong { display: block; font-size: 11px; }
+.route-floating-top small { display: block; color: #8a7a6d; font-size: 9px; }
+.route-floating-bottom { right: 2px; bottom: 1px; padding: 10px 13px; transform: rotate(-3deg); }
+.route-floating-bottom span { color: #8a694c; font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+.route-floating-bottom strong { font-size: 11px; }
+.screen-landing .home-benefits { gap: 18px; margin-top: 50px; }
+.screen-landing .home-benefit { border-radius: 5px; padding: 25px; }
+.screen-landing .home-benefit h2 { font-size: 21px; }
+
+@media (max-width: 700px) {
+  .screen-landing .home-intro { grid-template-columns: 1fr; gap: 20px; padding: 34px 22px 28px; border-radius: 0 0 15px 15px; }
+  .screen-landing .home-intro-content { padding-top: 5px; }
+  .screen-landing .home-editorial h1 { font-size: clamp(39px, 11vw, 52px); }
+  .screen-landing .home-route { padding: 28px 10px 39px; }
+  .route-floating-top { right: 0; }
+  .route-floating-bottom { right: 12px; }
+  .screen-landing .home-benefits { margin-top: 30px; }
+}
+
 /* Shared internal-page treatment: calm ivory surfaces with a confident brown hierarchy. */
 .screen-profiling, .screen-results, .screen-dashboard, .screen-directory { background: #f7f2ec !important; }
 .screen-profiling main, .screen-results main, .screen-dashboard main, .screen-directory main { padding-top: 38px; padding-bottom: 76px; }
@@ -309,6 +345,14 @@ footer { background: transparent !important; margin-top: 36px !important; }
 .account-mode-toggle { align-self: center; margin-top: 7px; color: #694c37; font-size: 12px; font-weight: 700; }
 .account-mode-toggle:hover { text-decoration: underline; }
 .account-form-footnote { margin-top: 6px; color: #8a7a6d; font-size: 10px; line-height: 1.6; }
+.auth-prompt-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: rgb(53 42 35 / .42); backdrop-filter: blur(5px); }
+.auth-prompt { position: relative; width: min(100%, 390px); padding: 32px; border: 1px solid #e0d1c1; border-radius: 14px; background: #fffaf4; box-shadow: 0 24px 70px rgb(53 42 35 / .22); }
+.auth-prompt h2 { margin-top: 11px; color: #3d2b22; font-size: 27px; font-weight: 600; letter-spacing: -.035em; }
+.auth-prompt p { margin: 10px 0 23px; color: #75665a; font-size: 13px; line-height: 1.7; }
+.auth-prompt .account-submit { width: 100%; justify-content: center; }
+.auth-prompt .account-mode-toggle { display: block; margin: 14px auto 0; }
+.auth-prompt-close { position: absolute; top: 12px; right: 14px; width: 30px; height: 30px; border-radius: 50%; color: #75665a; font-size: 22px; line-height: 1; }
+.auth-prompt-close:hover { background: #f0e9e2; color: #3d2b22; }
 .account-confirmation-panel { display: flex; flex-direction: column; align-items: center; max-width: 560px; min-height: 500px; margin: 0 auto; padding: 72px 30px; text-align: center; }
 .account-confirmation-icon { display: grid; place-items: center; width: 68px; height: 68px; margin-bottom: 24px; border-radius: 50%; background: #eadbca; color: #694c37; font-size: 28px; }
 .account-confirmation-panel h1 { margin-top: 12px; color: #3d2b22; font-size: 36px; font-weight: 600; letter-spacing: -.04em; }
@@ -467,6 +511,11 @@ html { scroll-padding-top: 90px; }
   .app-shell main .text-2xl { font-size: 22px; line-height: 1.4; }
   .home-editorial h1 { font-size: clamp(29px, 8.6vw, 37px); }
   .home-editorial .home-intro { padding: 25px 20px; }
+  .screen-landing .home-intro { padding: 27px 20px 30px; }
+  .screen-landing .home-lead { margin-top: 18px; font-size: 15px; line-height: 1.65; }
+  .screen-landing .home-description { margin-top: 16px; font-size: 12.5px; line-height: 1.7; }
+  .screen-landing .home-actions { margin-top: 22px; }
+  .screen-landing .home-transparency { margin-top: 22px; padding-top: 16px; font-size: 10.5px; line-height: 1.7; }
   .chat-heading { padding: 14px 16px; }
   .chat-messages { padding: 18px 16px; }
   .chat-composer { padding: 10px 12px; }
@@ -482,6 +531,56 @@ html { scroll-padding-top: 90px; }
   .bottom-nav button { font-size: 10px; }
   .app-shell main { padding-left: 12px; padding-right: 12px; }
   .home-editorial .home-intro { padding: 22px 16px; }
+}
+
+/* Landing collage: a composed editorial surface instead of a generic two-column hero. */
+.app-shell.screen-landing .home-editorial { padding-top: 18px; }
+.app-shell.screen-landing .home-intro {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(320px, .98fr);
+  gap: 58px;
+  overflow: hidden;
+  min-height: 610px;
+  padding: 68px 58px 54px;
+  border: 0;
+  border-radius: 0 0 22px 22px;
+  background: #4b3327;
+  box-shadow: 0 22px 46px rgb(53 42 35 / .16);
+  isolation: isolate;
+}
+.app-shell.screen-landing .home-intro::before,
+.app-shell.screen-landing .home-intro::after { content: ''; position: absolute; z-index: -1; pointer-events: none; border: 1px solid #775746; }
+.app-shell.screen-landing .home-intro::before { width: 48%; height: 70%; right: -9%; top: 9%; transform: rotate(8deg); }
+.app-shell.screen-landing .home-intro::after { width: 58%; height: 35%; right: 7%; bottom: -14%; transform: rotate(-4deg); border-color: #624536; }
+.app-shell.screen-landing .home-intro-content { position: relative; z-index: 2; align-self: start; max-width: 610px; padding-top: 26px; }
+.app-shell.screen-landing .home-intro h1 { max-width: 650px; font-size: clamp(42px, 5vw, 70px); line-height: 1.03; }
+.app-shell.screen-landing .home-lead { max-width: 520px; font-size: 18px; }
+.app-shell.screen-landing .home-description { max-width: 520px; color: #e2cdbb; }
+.app-shell.screen-landing .home-route { position: relative; align-self: center; min-height: 480px; padding: 42px 8px 14px; }
+.app-shell.screen-landing .route-shop { position: absolute; top: 1px; left: -18px; z-index: 1; width: 62%; transform: rotate(-5deg); opacity: .95; }
+.app-shell.screen-landing .route-paper { position: relative; z-index: 2; width: min(100%, 360px); margin-left: auto; transform: rotate(3deg); padding: 31px; box-shadow: 13px 15px 0 #36251c, 0 18px 32px rgb(53 42 35 / .22); }
+.app-shell.screen-landing .route-paper h2 { font-size: 29px; }
+.app-shell.screen-landing .route-floating-top { top: 22px; right: 0; }
+.app-shell.screen-landing .route-floating-bottom { right: 5px; bottom: 8px; }
+.app-shell.screen-landing .home-benefits { position: relative; z-index: 3; margin-top: -4px; }
+.app-shell.screen-landing .home-benefit { min-height: 245px; }
+.app-shell.screen-landing .home-benefit:nth-child(1) { transform: translateY(-10px) rotate(-1.2deg); }
+.app-shell.screen-landing .home-benefit:nth-child(2) { transform: translateY(8px) rotate(.7deg); }
+.app-shell.screen-landing .home-benefit:nth-child(3) { transform: translateY(-2px) rotate(-.7deg); }
+.app-shell.screen-landing .home-examples { position: relative; z-index: 4; }
+
+@media (max-width: 700px) {
+  .app-shell.screen-landing .home-editorial { padding-top: 0; }
+  .app-shell.screen-landing .home-intro { display: block; min-height: 0; padding: 38px 22px 28px; border-radius: 0 0 16px 16px; }
+  .app-shell.screen-landing .home-intro-content { padding-top: 4px; }
+  .app-shell.screen-landing .home-intro h1 { font-size: clamp(39px, 11vw, 56px); }
+  .app-shell.screen-landing .home-route { min-height: 455px; margin-top: 25px; }
+  .app-shell.screen-landing .route-shop { left: 1%; width: 70%; }
+  .app-shell.screen-landing .route-paper { width: min(88%, 330px); margin-left: auto; padding: 24px; }
+  .app-shell.screen-landing .route-paper h2 { font-size: 24px; }
+  .app-shell.screen-landing .home-benefits { margin-top: 22px; }
+  .app-shell.screen-landing .home-benefit:nth-child(n) { transform: none; min-height: 0; }
 }
 @media (max-height: 500px) and (max-width: 1023px) and (orientation: landscape) {
   .app-shell header { position: static; }

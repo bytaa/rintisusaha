@@ -1047,6 +1047,7 @@
       const [loginPassword, setLoginPassword] = useState("");
       const [authMode, setAuthMode] = useState("signin");
       const [authStatus, setAuthStatus] = useState("idle");
+      const [showAuthPrompt, setShowAuthPrompt] = useState(false);
       const [supabaseClient, setSupabaseClient] = useState(null);
       const [authReady, setAuthReady] = useState(false);
       const chatEnd = React.useRef(null);
@@ -1102,6 +1103,13 @@
           .finally(() => setAuthReady(true));
         return () => authSubscription?.unsubscribe();
       }, []);
+
+      useEffect(() => {
+        if (!authReady || account || authStatus === "waiting_confirmation") return;
+        if (sessionStorage.getItem("rintis-auth-prompt-seen")) return;
+        sessionStorage.setItem("rintis-auth-prompt-seen", "true");
+        setShowAuthPrompt(true);
+      }, [authReady, account, authStatus]);
 
       function navigateTo(tab) {
         if (!hasProfile && ["results", "dashboard"].includes(tab)) {
@@ -1361,6 +1369,19 @@
             </div>
           )}
 
+          {showAuthPrompt && !account && (
+            <div className="auth-prompt-backdrop" role="dialog" aria-modal="true" aria-labelledby="auth-prompt-title">
+              <div className="auth-prompt">
+                <button type="button" className="auth-prompt-close" aria-label="Tutup" onClick={() => setShowAuthPrompt(false)}>×</button>
+                <span className="account-kicker">RINTISUSAHA</span>
+                <h2 id="auth-prompt-title">Simpan langkah usahamu.</h2>
+                <p>Sign in untuk melanjutkan profil, percakapan Riri, dan checklist dari perangkat mana pun.</p>
+                <button type="button" className="account-submit" onClick={() => { setShowAuthPrompt(false); setActiveTab("account"); }}>Sign in / Sign up <span>→</span></button>
+                <button type="button" className="account-mode-toggle" onClick={() => setShowAuthPrompt(false)}>Lanjut sebagai guest</button>
+              </div>
+            </div>
+          )}
+
           {/* Route content */}
           <main id="main-content" tabIndex="-1" className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 sm:py-8">
             {/* Landing */}
@@ -1378,6 +1399,7 @@
                     <div className="home-transparency"><strong>Panduan independen.</strong> RintisUsaha tidak menerbitkan izin atau memungut biaya pengurusan. Kamu akan diarahkan langsung ke portal resmi pemerintah untuk melanjutkan proses.</div>
                   </div>
                   <aside className="home-route" aria-label="Ilustrasi alur persiapan usaha">
+                    <div className="route-floating route-floating-top"><span>01</span><strong>NIB / OSS</strong><small>Langkah dasar usaha</small></div>
                     <div className="route-shop" aria-hidden="true">
                       <svg viewBox="0 0 260 140" fill="none"><path d="M28 125H232" stroke="#cbb9a5"/><path d="M66 62H194V124H66V62Z" fill="#faf6ef" stroke="#8a694c" strokeWidth="2"/><path d="M57 62L70 28H190L203 62" fill="#dbc6aa" stroke="#8a694c" strokeWidth="2"/><path d="M57 62V68C57 82 86 82 86 68C86 82 115 82 115 68C115 82 145 82 145 68C145 82 174 82 174 68C174 82 203 82 203 68V62H57Z" fill="#f6eee3" stroke="#8a694c" strokeWidth="2"/><path d="M88 28L86 62M113 28L115 62M146 28L145 62M172 28L174 62" stroke="#8a694c" strokeWidth="2"/><rect x="84" y="89" width="43" height="23" rx="2" fill="#e6d8c4"/><path d="M149 124V89H179V124" stroke="#8a694c" strokeWidth="2"/><path d="M159 105V110" stroke="#8a694c" strokeWidth="2" strokeLinecap="round"/><path d="M41 124V102M36 98C25 82 47 84 41 104C57 89 62 108 41 109" stroke="#9b9a78" strokeWidth="2" strokeLinecap="round"/></svg>
                     </div>
@@ -1387,6 +1409,7 @@
                       <ol className="route-steps"><li><span>1</span><div><strong>Ceritakan aktivitas usaha</strong><p>Produk, proses, dan lokasi</p></div></li><li><span>2</span><div><strong>Periksa kandidat KBLI</strong><p>Cocokkan dengan kegiatanmu</p></div></li><li><span>3</span><div><strong>Siapkan kebutuhan izin</strong><p>Lanjutkan ke layanan resmi</p></div></li></ol>
                       <div className="route-companion"><img src="assets/riri-nyapa.jpg" alt="Avatar Riri"/><span>Riri mendampingi tiap langkah.</span></div>
                     </div>
+                    <div className="route-floating route-floating-bottom"><span>RIRI</span><strong>Siap mendengar ceritamu.</strong></div>
                   </aside>
                 </section>
                 <section className="official-logo-strip" aria-label="Rujukan layanan resmi">
@@ -2299,9 +2322,6 @@
             <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <strong className="text-slate-800">RintisUsaha</strong> — Panduan perizinan usaha.
-              </div>
-              <div className="text-slate-400">
-                Bukan instansi pemerintah • Profil & percakapan tersimpan di browser ini
               </div>
             </div>
           </footer>
