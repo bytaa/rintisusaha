@@ -1032,6 +1032,8 @@
     function App() {
       // State navigasi: 'landing' | 'profiling' | 'results' | 'dashboard' | 'directory'
       const [activeTab, setActiveTab] = useState("landing");
+      const [permitStage, setPermitStage] = useState(0);
+      const [permitIndex, setPermitIndex] = useState(0);
       const [profile, setProfile] = useState(DEMO_SCENARIOS.packaged_food.profile);
       const [inputText, setInputText] = useState("");
       const [checklistState, setChecklistState] = useState({});
@@ -1118,6 +1120,21 @@
         } else setActiveTab(tab);
       }
 
+      // Animate each section once when it enters the viewport; content stays visible without JS.
+      useEffect(() => {
+        if (!window.IntersectionObserver || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("section-arrived");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        document.querySelectorAll(".home-benefit, .home-benefits-intro, .explore-card").forEach(el => observer.observe(el));
+        return () => observer.disconnect();
+      }, [activeTab]);
+
       // Muat dari localStorage saat pertama kali dibuka
       useEffect(() => {
         const savedState = loadAppState();
@@ -1137,6 +1154,13 @@
       }, [profile, inputText, checklistState, hasProfile, ririMessages, ririQuestions]);
 
       const recommendation = useMemo(() => generateRecommendations(profile), [profile]);
+      useEffect(() => { setPermitStage(0); setPermitIndex(0); }, [profile]);
+      useEffect(() => {
+        if (activeTab === "results") {
+          document.getElementById("permit-heading")?.focus({ preventScroll: true });
+          window.scrollTo({ top: 0, behavior: "instant" });
+        }
+      }, [permitStage, permitIndex]);
       const relevantServices = useMemo(() => getRelevantServices(recommendation, hasProfile), [recommendation, hasProfile]);
       const navigationItems = useMemo(() => APP_NAVIGATION.map((item) => (
         item.id === "account" && account ? { ...item, label: "Profil saya", short: "Profil" } : item
@@ -1199,7 +1223,7 @@
           return;
         }
         if (!loginEmail.trim() || !loginPassword || (authMode === "signup" && !loginName.trim())) {
-          showToast(authMode === "signin" ? "Isi email dan password untuk sign in." : "Isi nama, email, dan password untuk sign up.");
+          showToast(authMode === "signin" ? "Isi email dan password untuk login." : "Isi nama, email, dan password untuk sign up.");
           return;
         }
         const email = loginEmail.trim().toLowerCase();
@@ -1213,7 +1237,10 @@
             }
           });
           if (error) {
-            showToast(`Sign up gagal: ${error.message}`);
+            const message = error.message.toLowerCase().includes("rate limit")
+              ? "Supabase sedang membatasi pengiriman email. Tunggu beberapa menit atau gunakan email yang sudah terdaftar untuk login."
+              : `Sign up gagal: ${error.message}`;
+            showToast(message);
             return;
           }
           if (!data.session) {
@@ -1230,7 +1257,7 @@
         } else {
           const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: loginPassword });
           if (error) {
-            showToast(`Sign in gagal: ${error.message}`);
+            showToast(`Login gagal: ${error.message}`);
             return;
           }
           showToast(`Selamat datang kembali, ${data.user?.user_metadata?.full_name || email}.`);
@@ -1375,8 +1402,8 @@
                 <button type="button" className="auth-prompt-close" aria-label="Tutup" onClick={() => setShowAuthPrompt(false)}>×</button>
                 <span className="account-kicker">RINTISUSAHA</span>
                 <h2 id="auth-prompt-title">Simpan langkah usahamu.</h2>
-                <p>Sign in untuk melanjutkan profil, percakapan Riri, dan checklist dari perangkat mana pun.</p>
-                <button type="button" className="account-submit" onClick={() => { setShowAuthPrompt(false); setActiveTab("account"); }}>Sign in / Sign up <span>→</span></button>
+                <p>Login untuk melanjutkan profil, percakapan Riri, dan checklist dari perangkat mana pun.</p>
+                <button type="button" className="account-submit" onClick={() => { setShowAuthPrompt(false); setActiveTab("account"); }}>Login / Sign up <span>→</span></button>
                 <button type="button" className="account-mode-toggle" onClick={() => setShowAuthPrompt(false)}>Lanjut sebagai guest</button>
               </div>
             </div>
@@ -1389,6 +1416,7 @@
               <div className="home home-editorial">
                 <section className="home-intro" aria-labelledby="home-title">
                   <div className="home-intro-content">
+                    <p className="hero-edition"><span aria-hidden="true">✳</span> UNTUK LANGKAH PERTAMA USAHAMU</p>
                     <h1 id="home-title">Dari cerita usaha<br/>menjadi <span>peta legalitas.</span></h1>
                     <p className="home-lead">Merintis usaha sudah banyak tantangannya.<br className="home-desktop-break"/> Memahami perizinan tak perlu menambah kebingungan.</p>
                     <p className="home-description">Ceritakan kegiatan usahamu dalam bahasa sehari-hari. RintisUsaha membantu menemukan kandidat KBLI, memahami dokumen yang perlu disiapkan, dan menentukan langkah awal menuju layanan resmi.</p>
@@ -1419,9 +1447,10 @@
                       ["assets/logo/oss.png", "NIB / OSS"],
                       ["assets/logo/mui.png", "Sertifikasi Halal"],
                       ["assets/logo/jakevo.png", "JakEVO"]
-                    ].map(([logo, label]) => <div className="official-logo-item" key={label}><img src={logo} alt={`${label} logo`} /><span>{label}</span></div>)}
+                    ].map(([logo, label]) => <div className="official-logo-item" key={label} aria-label={label}><img src={logo} alt={`${label} logo`} /></div>)}
                   </div>
                 </section>
+                <div className="home-benefits-intro"><span>LANGKAH MERINTIS</span><h2>Usahamu berkembang.<br/>Persiapannya lebih terarah.</h2><p>Dari memahami kegiatan usaha hingga menemukan layanan resmi, mulai dari langkah yang kamu butuhkan.</p></div>
                 <section className="home-benefits" id="cara-kerja" aria-label="Cara kerja dan manfaat RintisUsaha">
                   {[
                     ["01", "Temukan kandidat KBLI yang relevan.", "Ceritakan apa yang kamu jual dan bagaimana usahamu berjalan. Periksa kandidat kode usaha beserta alasan kecocokannya sebelum memilih di OSS."],
@@ -1429,14 +1458,21 @@
                     ["03", "Lanjutkan ke layanan resmi dengan terarah.", "Gunakan daftar persiapan untuk mencatat progres, lalu akses portal pemerintah yang sesuai dengan kebutuhan usahamu."]
                   ].map(([number,title,description]) => <article className="home-benefit" key={number}><div className="benefit-heading"><span className="benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{number === "01" ? <><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5M8 10h4M10 8v4"/></> : number === "02" ? <><path d="M7 3h10v3h3v15H4V6h3V3Z"/><path d="M7 6h10M8 12l2 2 5-5M8 18h8"/></> : <><path d="M14 4h6v6M20 4l-9 9M10 5H4v15h15v-6"/></>}</svg></span><p className="home-benefit-label">MANFAAT {number}</p></div><h2>{title}</h2><p>{description}</p></article>)}
                 </section>
-                <section className="home-examples" aria-label="Contoh usaha"><div><h2>Ingin lihat contohnya dulu?</h2><p>Pilih usaha untuk mencoba alur persiapannya.</p></div><div>{[["packaged_food","Keripik rumahan"],["catering","Katering kecil"],["salon","Salon rambut"]].map(([key,label]) => <button type="button" key={key} onClick={() => handleLoadScenario(key)}>{label} <span aria-hidden="true">↗</span></button>)}</div></section>
+                <section className="home-examples explore-business" aria-label="Contoh usaha">
+                  <div className="explore-heading"><div><span className="explore-kicker">CERITA YANG DEKAT DENGANMU</span><h2>Setiap usaha punya jalannya.</h2><p>Pilih contoh untuk melihat bagaimana persiapannya.</p></div><span className="explore-note">3 contoh usaha <span aria-hidden="true">↙</span></span></div>
+                  <div className="explore-grid">{[
+                    ["packaged_food", "01", "Keripik rumahan", "Dari dapur sendiri, ke warung dan toko online.", "Produksi pangan", "M7 3h10l-1 4 3 13H5L8 7 7 3ZM8 7h8M9 12c4-4 9 2 4 5-4 2-6-2-4-5Z"],
+                    ["catering", "02", "Katering kecil", "Menyiapkan pesanan makan untuk acara dan pelanggan.", "Makanan siap saji", "M3 17h18M5 16a7 7 0 0 1 14 0M12 5v3M10 5h4M4 21h16"],
+                    ["salon", "03", "Salon rambut", "Membangun ruang perawatan dan layanan pelanggan.", "Usaha jasa", "m8 8 12 12M8 16 20 4M7 7a3 3 0 1 0 0 .1M7 17a3 3 0 1 0 0 .1"]
+                  ].map(([key,number,label,description,category,path]) => <button className="explore-card" key={key} type="button" onClick={() => handleLoadScenario(key)}><span className="explore-art" aria-hidden="true"><span className="explore-number">{number}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d={path}/></svg><span className="explore-orbit"/></span><span className="explore-category">{category}</span><strong>{label}</strong><span className="explore-description">{description}</span><span className="explore-action">Lihat contoh persiapan <span aria-hidden="true">↗</span></span></button>)}</div>
+                </section>
               </div>
             )}
 
             {/* Riri conversation */}
             {activeTab === "profiling" && (
               <div className="riri-workspace">
-                <div className="workspace-heading"><div><h1>Ceritakan usahamu</h1><p>Mulai dari aktivitas usaha, lalu kita periksa kebutuhan izinnya.</p></div><span>Langkah 1 dari 3</span></div>
+                <div className="workspace-heading feature-banner"><div><span className="feature-eyebrow">BERSAMA RIRI / KENALI USAHAMU</span><h1>Ceritakan usahamu</h1><p>Mulai dari aktivitas usaha, lalu kita periksa kebutuhan izinnya.</p></div><span>Langkah 1 dari 3</span></div>
                 <div className="riri-stage">
                   <section className="chat-panel" aria-label="Percakapan dengan Riri">
                     <div className="chat-heading"><div className="assistant-identity"><img className="riri-avatar" src={getRiriAvatar()} alt="Avatar Riri"/><div><strong>Riri</strong><span>Pendamping perizinan usaha</span></div></div><button disabled={ririBusy} className="text-button" onClick={() => {setRiriMessages([]); setRiriQuestions([]); setInputText(""); setHasProfile(false); setChecklistState({});}}>Mulai ulang</button></div>
@@ -1755,7 +1791,11 @@
 
             {/* Recommendation */}
             {activeTab === "results" && (
-              <div className="space-y-8">
+              <div className="permit-workspace space-y-6">
+                <section className="feature-banner">
+                  <div><span className="feature-eyebrow">PETA IZIN / PANDUAN PERSONAL</span><h1 id="permit-heading" tabIndex="-1">Satu langkah lebih dekat.</h1><p>Pahami kebutuhan usahamu sedikit demi sedikit. Tidak perlu mengurus semuanya sekaligus.</p></div>
+                  <span className="feature-seal" aria-hidden="true">0{permitStage + 1}<small>DARI 04</small></span>
+                </section>
                 {/* Banner jika masih ambigu */}
                 {recommendation.status === "NEEDS_CLARIFICATION" ? (
                   <div className="bg-amber-50 border border-amber-300 rounded-2xl p-6 space-y-4">
@@ -1775,12 +1815,17 @@
                   </div>
                 ) : (
                   <>
+                    <nav className="permit-stages" aria-label="Tahapan panduan izin">
+                      {["Profil usaha", "Kandidat KBLI", "Urutan izin", "Siap melangkah"].map((label, i) => <button type="button" key={label} aria-current={permitStage === i ? "step" : undefined} onClick={() => setPermitStage(i)}><span>{i + 1}</span><strong>{label}</strong></button>)}
+                    </nav>
+                    <div className="permit-page" key={`${permitStage}-${permitIndex}`}>
+                    {permitStage === 0 && <>
                     {/* 1. RINGKASAN PROFIL USAHA & ASUMSI */}
                     <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                         <div>
                           <span className="text-xs font-bold uppercase tracking-wider text-brand-700">
-                            Bagian 1 dari 3 • Ringkasan Profil & Asumsi
+                            Langkah 1 dari 4 • Ringkasan Profil & Asumsi
                           </span>
                           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">
                             {recommendation.summary.identifiedActivity}
@@ -1841,11 +1886,13 @@
                       </div>
                     </section>
 
+                    </>}
+                    {permitStage === 1 && <>
                     {/* 2. KANDIDAT REKOMENDASI KBLI */}
                     <section className="space-y-4">
                       <div>
                         <span className="text-xs font-bold uppercase tracking-wider text-brand-700">
-                          Bagian 2 dari 3 • Kandidat Klasifikasi Usaha
+                          Langkah 2 dari 4 • Kandidat Klasifikasi Usaha
                         </span>
                         <h2 className="text-xl font-bold text-slate-900">
                           Kandidat Kode KBLI untuk Diperiksa di OSS
@@ -1895,11 +1942,14 @@
                       </div>
                     </section>
 
+                    </>}
+                    {permitStage === 2 && <>
+                    <div className="permit-count"><span>Izin {recommendation.roadmap.length ? permitIndex + 1 : 0} dari {recommendation.roadmap.length}</span><p>Baca kebutuhan izin ini, lalu lanjut ke izin berikutnya.</p></div>
                     {/* 3. PETA JALAN PERIZINAN TERURUT (LICENSING ROADMAP) */}
                     <section className="space-y-4">
                       <div>
                         <span className="text-xs font-bold uppercase tracking-wider text-brand-700">
-                          Bagian 3 dari 3 • Urutan Persiapan Legalitas
+                          Langkah 3 dari 4 • Urutan Persiapan Legalitas
                         </span>
                         <h2 className="text-xl font-bold text-slate-900">
                           Peta Jalan Perizinan & Persyaratan
@@ -1910,7 +1960,7 @@
                       </div>
 
                       <div className="space-y-4">
-                        {recommendation.roadmap.map((step, index) => (
+                        {recommendation.roadmap.slice(permitIndex, permitIndex + 1).map((step, index) => (
                           <div
                             key={step.id}
                             className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4"
@@ -1926,7 +1976,7 @@
 
                             <div className="space-y-2">
                               <h3 className="text-lg font-bold text-slate-900">
-                                Tahap {index + 1}: {step.name}
+                                Tahap {permitIndex + 1}: {step.name}
                               </h3>
                               <p className="text-sm text-slate-700">
                                 <strong>Tujuan:</strong> {step.purpose}
@@ -1972,6 +2022,24 @@
                         ))}
                       </div>
                     </section>
+                    </>}
+                    {permitStage === 3 && <section className="permit-finish">
+                      <span className="finish-mark" aria-hidden="true">↗</span>
+                      <div><span className="feature-eyebrow">LANGKAH 4 / PERSIAPAN</span><h2>Sudah tahu arahnya.<br/>Sekarang, siapkan satu per satu.</h2><p>Gunakan checklist untuk mencatat dokumen yang sudah siap. Membaca panduan ini belum berarti izin telah terbit.</p>
+                      <div className="finish-actions"><button className="primary-button" onClick={() => setActiveTab("dashboard")}>Buka checklist persiapan →</button><button className="secondary-button" onClick={() => setActiveTab("directory")}>Lihat layanan terkait ↗</button></div></div>
+                    </section>}
+                    </div>
+                    <footer className="permit-controls">
+                      <button type="button" disabled={permitStage === 0} onClick={() => {
+                        if (permitStage === 2 && permitIndex > 0) setPermitIndex(permitIndex - 1);
+                        else setPermitStage(permitStage - 1);
+                      }}>← Kembali</button>
+                      <span>Panduan persiapan, bukan status pengajuan</span>
+                      {permitStage < 3 && <button className="primary-button" type="button" onClick={() => {
+                        if (permitStage === 2 && permitIndex < recommendation.roadmap.length - 1) setPermitIndex(permitIndex + 1);
+                        else setPermitStage(permitStage + 1);
+                      }}>{permitStage === 2 && permitIndex < recommendation.roadmap.length - 1 ? "Izin berikutnya" : "Lanjut"} →</button>}
+                    </footer>
                   </>
                 )}
               </div>
@@ -1980,6 +2048,8 @@
             {/* Preparation dashboard */}
             {activeTab === "dashboard" && (
               <div className="space-y-8">
+                <section className="feature-banner"><div><span className="feature-eyebrow">RUANG PERSIAPAN</span><h1>Langkah kecil, progres nyata.</h1><p>Siapkan dokumen sesuai waktumu. Tandai yang sudah siap, lalu lanjutkan sisanya.</p></div><span className="feature-seal">{progressMetrics.percentage}%<small>DOKUMEN SIAP</small></span></section>
+                <div className="feature-metrics"><div><span>01 / Sudah siap</span><strong>{progressMetrics.completed}<small>dokumen</small></strong></div><div><span>02 / Berikutnya</span><strong>{progressMetrics.pending}<small>belum selesai</small></strong></div><div><span>03 / Perlu diperiksa</span><strong>{progressMetrics.needsConfirmation}<small>konfirmasi</small></strong></div></div>
                 {/* Header Ringkasan Dashboard */}
                 <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -2178,9 +2248,9 @@
             {/* Official services */}
             {activeTab === "directory" && (
               <div className="space-y-6">
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-700">
-                    Direktori Rujukan Resmi
+                <div className="feature-banner directory-banner">
+                  <span className="feature-eyebrow">
+                    DIREKTORI / RUJUKAN RESMI
                   </span>
                   <h1 className="text-2xl font-bold text-slate-900">
                     Layanan resmi untuk usahamu
@@ -2271,20 +2341,20 @@
                     <p>Link konfirmasi sudah dikirim ke email yang kamu gunakan. Buka link tersebut untuk mengaktifkan akun. Setelah berhasil, kamu akan otomatis diarahkan ke Beranda.</p>
                     <div className="account-confirmation-actions">
                       <button type="button" className="account-submit" onClick={async () => { const result = await supabaseClient?.auth.getSession(); const user = result?.data.session?.user; if (user) { setAuthStatus("authenticated"); setAccount({ id: user.id, name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Pengguna", email: user.email || "" }); setActiveTab("landing"); } else showToast("Email belum dikonfirmasi. Buka link di inbox terlebih dahulu."); }}>Saya sudah konfirmasi</button>
-                      <button type="button" className="account-mode-toggle" onClick={() => setAuthStatus("idle")}>Kembali ke sign in</button>
+                      <button type="button" className="account-mode-toggle" onClick={() => setAuthStatus("idle")}>Kembali ke login</button>
                     </div>
                   </section>
                 ) : !account ? (
                   <section className="account-login-panel">
                     <form className="account-login-form" onSubmit={handleLogin}>
-                      <div className="account-form-heading"><span className="account-avatar">R</span><div><strong>{authMode === "signin" ? "Sign in ke RintisUsaha" : "Sign up di RintisUsaha"}</strong><span>{authMode === "signin" ? "Lanjutkan persiapan usahamu" : "Buat akun personal baru"}</span></div></div>
+                      <div className="account-form-heading"><img className="account-avatar account-brand-logo" src="assets/logo/logo-rintisusaha.png" alt="Logo RintisUsaha" /><div><strong>{authMode === "signin" ? "Login ke RintisUsaha" : "Sign up di RintisUsaha"}</strong><span>{authMode === "signin" ? "Lanjutkan persiapan usahamu" : "Buat akun personal baru"}</span></div></div>
                       {authMode === "signup" && <><label htmlFor="account-name">Nama lengkap</label><input id="account-name" value={loginName} onChange={(event) => setLoginName(event.target.value)} placeholder="Contoh: Aulia Rahma" autoComplete="name" /></>}
                       <label htmlFor="account-email">Email aktif</label>
                       <input id="account-email" type="email" value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} placeholder="nama@email.com" autoComplete="email" />
                       <label htmlFor="account-password">Password</label>
                       <input id="account-password" type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} placeholder="Minimal 6 karakter" autoComplete="current-password" minLength="6" />
-                      <button type="submit" className="account-submit" disabled={!authReady || !loginEmail || !loginPassword || (authMode === "signup" && !loginName)}>{authReady ? (authMode === "signin" ? "Sign in" : "Sign up") : "Menghubungkan…"} <span>→</span></button>
-                      <button type="button" className="account-mode-toggle" onClick={() => setAuthMode(authMode === "signin" ? "signup" : "signin")}>{authMode === "signin" ? "Belum punya akun? Sign up" : "Sudah punya akun? Sign in"}</button>
+                      <button type="submit" className="account-submit" disabled={!authReady || !loginEmail || !loginPassword || (authMode === "signup" && !loginName)}>{authReady ? (authMode === "signin" ? "Login" : "Sign up") : "Menghubungkan…"} <span>→</span></button>
+                      <button type="button" className="account-mode-toggle" onClick={() => setAuthMode(authMode === "signin" ? "signup" : "signin")}>{authMode === "signin" ? "Belum punya akun? Sign up" : "Sudah punya akun? Login"}</button>
                       <p className="account-form-footnote">Autentikasi diproses oleh Supabase Auth. Password tidak disimpan oleh aplikasi.</p>
                     </form>
                   </section>
