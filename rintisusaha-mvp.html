@@ -1120,17 +1120,19 @@
           if (savedState.checklistState) setChecklistState(savedState.checklistState);
           if (Array.isArray(savedState.ririMessages)) setRiriMessages(savedState.ririMessages);
           if (Array.isArray(savedState.ririQuestions)) setRiriQuestions(savedState.ririQuestions);
-          if (savedState.account) setAccount(savedState.account);
         }
       }, []);
 
       // Simpan otomatis ke localStorage
       useEffect(() => {
-        saveAppState({ profile, inputText, checklistState, hasProfile, ririMessages, ririQuestions, account });
-      }, [profile, inputText, checklistState, hasProfile, ririMessages, ririQuestions, account]);
+        saveAppState({ profile, inputText, checklistState, hasProfile, ririMessages, ririQuestions });
+      }, [profile, inputText, checklistState, hasProfile, ririMessages, ririQuestions]);
 
       const recommendation = useMemo(() => generateRecommendations(profile), [profile]);
       const relevantServices = useMemo(() => getRelevantServices(recommendation, hasProfile), [recommendation, hasProfile]);
+      const navigationItems = useMemo(() => APP_NAVIGATION.map((item) => (
+        item.id === "account" && account ? { ...item, label: "Profil saya", short: "Profil" } : item
+      )), [account]);
 
       // Sinkronisasi item checklist dengan rekomendasi aktif
       const mergedChecklist = useMemo(() => {
@@ -1328,7 +1330,7 @@
               </button>
 
               <nav className="flex flex-wrap items-center gap-1 sm:gap-2" aria-label="Navigasi Utama">
-                {APP_NAVIGATION.map((item) => (
+                {navigationItems.map((item) => (
                   <button
                     key={item.id}
                     type="button"
@@ -2307,7 +2309,7 @@
             </div>
           </footer>
           <nav className="bottom-nav" aria-label="Navigasi bawah">
-            {APP_NAVIGATION.map(item => <button key={item.id} type="button" onClick={() => navigateTo(item.id)} aria-label={item.label} aria-current={activeTab === item.id ? "page" : undefined} className={activeTab === item.id ? "bottom-nav-active" : ""}><span className="bottom-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={item.icon}/></svg></span><span>{item.short}</span></button>)}
+            {navigationItems.map(item => <button key={item.id} type="button" onClick={() => navigateTo(item.id)} aria-label={item.label} aria-current={activeTab === item.id ? "page" : undefined} className={activeTab === item.id ? "bottom-nav-active" : ""}><span className="bottom-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={item.icon}/></svg></span><span>{item.short}</span></button>)}
           </nav>
         </div>
       );
